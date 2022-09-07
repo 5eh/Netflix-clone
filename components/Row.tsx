@@ -5,8 +5,7 @@ import { useRef, useState } from "react";
 
 interface Props {
   title: string;
-  // movie: Movie | DoucmentDate[];
-  movie: Movie[];
+  movies: Movie[];
 }
 
 function Row({ title, movies }: Props) {
@@ -22,8 +21,7 @@ function Row({ title, movies }: Props) {
       const scrollTo =
         direction === "left"
           ? scrollLeft - clientWidth
-          : scrollLeft + clientWidth;
-
+          : scrollLeft + clientWidth
       rowRef.current.scrollTo({ left: scrollTo, behavior: "smooth" });
     }
   };
