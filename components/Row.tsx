@@ -9,7 +9,7 @@ interface Props {
 }
 
 function Row({ title, movies }: Props) {
-  const rowRef = useRef(null);
+  const rowRef = useRef<HTMLDivElement>(null);
   const [isMoved, setIsMoved] = useState(false);
 
   const handleClick = (direction: string) => {
@@ -21,7 +21,7 @@ function Row({ title, movies }: Props) {
       const scrollTo =
         direction === "left"
           ? scrollLeft - clientWidth
-          : scrollLeft + clientWidth
+          : scrollLeft + clientWidth;
       rowRef.current.scrollTo({ left: scrollTo, behavior: "smooth" });
     }
   };
