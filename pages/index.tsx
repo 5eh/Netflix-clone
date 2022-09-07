@@ -4,7 +4,7 @@ import Header from "../components/Header";
 import Banner from "../components/Banner";
 import Row from "../components/Row";
 import requests from "../utils/requests";
-import Movie from "../typing";
+import { Movie } from "../typing";
 
 interface Props {
   netflixOriginals: Movie[];
