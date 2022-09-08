@@ -6,7 +6,6 @@ import Row from "../components/Row";
 import requests from "../utils/requests";
 import { Movie } from "../typing";
 import useAuth from "../hooks/useAuth";
-
 interface Props {
   netflixOriginals: Movie[];
   trendingNow: Movie[];
@@ -28,7 +27,8 @@ const Home = ({
   topRated,
   trendingNow,
 }: Props) => {
-  const { logout, loading } = useAuth();
+  const { loading } = useAuth();
+  // const showModal = useRecoilValue();
 
   if (loading) return null;
 
