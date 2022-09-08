@@ -5,11 +5,17 @@ import { modalState, movieState } from "../atoms/modalAtom";
 import { useEffect, useState } from "react";
 import { Movie } from "../typing";
 import { responsiveFontSizes } from "@mui/material";
+import { Element, Genre } from "../typing";
+import ReactPlayer from "react-player/lazy";
+import { FaPlay } from "react-icons/fa";
 
 function Modal() {
   const [showModal, setShowModal] = useRecoilState(modalState);
   const [movie, setMovie] = useRecoilState(movieState);
   const [data, setData] = useState();
+  const [trailer, setTrailer] = useState("");
+  const [genres, setGenres] = useState<Genre[]>();
+  const [muted, setMuted] = useState(false);
 
   useEffect(() => {
     async function fetchMovie() {
@@ -23,6 +29,16 @@ function Modal() {
         .then((response) => response.json())
         .catch((err) => console.log(err.message));
       setData(data);
+
+      if (data?.videos) {
+        const index = data.videos.results.findIndex(
+          (element: Element) => element.type === "Trailer"
+        );
+        setTrailer(data.videos?.results[index]?.key);
+      }
+      if (data?.genres) {
+        setGenres(data.genres);
+      }
     }
 
     fetchMovie();
@@ -42,7 +58,22 @@ function Modal() {
           <XIcon className="h-6 w-6" />
         </button>
 
-        <div></div>
+        <div className="relative-pt-[56.25%]">
+          <ReactPlayer
+            url={`https://www.youtube.com/watch?v=${trailer}`}
+            width="100%"
+            height="100%"
+            style={{ position: "absolute", top: "0", left: "0" }}
+            playing
+            muted={muted}
+          />
+          <div>
+            <button className="flex items-center gap-x-2 rounded">
+              <FaPlay className="h-7 w-7 text-black" />
+              Play
+            </button>
+          </div>
+        </div>
       </>
     </MuiModal>
   );
