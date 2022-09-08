@@ -33,9 +33,30 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
+  const [user, setUser] = useState<User | null>(null);
+  const [error, setError] = useState(null);
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(
+    () =>
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          // Logged in...
+          setUser(user);
+          setLoading(false);
+        } else {
+          // Not logged in...
+          setUser(null);
+          setLoading(true);
+          router.push("/login");
+        }
+
+        setInitialLoading(false);
+      }),
+    [auth]
+  );
 
   const signUp = async (email: string, password: string) => {
     setLoading(true);
@@ -52,7 +73,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const signIn = async (email: string, password: string) => {
     setLoading(true);
-
     await signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         setUser(userCredential.user);
@@ -74,7 +94,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       .finally(() => setLoading(false));
   };
 
-  return <AuthContext.Provider>{children}</AuthContext.Provider>;
+  const memoedValue = useMemo(
+    () => ({ user, signUp, signIn, error, loading, logout }),
+    [user, loading, error]
+  );
+
+  return (
+    <AuthContext.Provider value={memoedValue}>
+      {!initialLoading && children}
+    </AuthContext.Provider>
+  );
 };
 
-export default AuthProvider;
+// Let's only export the `useAuth` hook instead of the context.
+// We only want to use the hook directly and never the context comopnent.
+export default function useAuth() {
+  return useContext(AuthContext);
+}
