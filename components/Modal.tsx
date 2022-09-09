@@ -20,7 +20,7 @@ function Modal() {
   const [movie, setMovie] = useRecoilState(movieState);
   const [data, setData] = useState();
   const [trailer, setTrailer] = useState("");
-  const [genres, setGenres] = useState<Genre[]>();
+  const [genres, setGenres] = useState<Genre[]>([]);
   const [muted, setMuted] = useState(false);
 
   useEffect(() => {
@@ -66,7 +66,7 @@ function Modal() {
           <XIcon className="h-6 w-6" />
         </button>
 
-        <div className="relative-pt-[56.25%]">
+        <div className="relative pt-[56.25%]">
           <ReactPlayer
             url={`https://www.youtube.com/watch?v=${trailer}`}
             width="100%"
@@ -98,8 +98,8 @@ function Modal() {
           </div>
         </div>
 
-        <div>
-          <div>
+        <div className="flex space-x-16 rounded-b-md bg-[#181818] px-10 py-8">
+          <div className="space-y-6" text-lg>
             <div className="flex items-center space-x-2 text-sm">
               <p className="font-semibold text-green-400">
                 {movie!.vote_average * 10}% Match
@@ -109,6 +109,22 @@ function Modal() {
               </p>
               <div className="flex h-4 items-center justify-center rounded border border-white/40 px-1.5 test-xs">
                 HD
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-x-10 gap-y-4 font-light md:flex-row">
+              <p className="w-5/6">{movie?.overview}</p>
+              <div className="flex flex-col space-y-3 text-sm">
+                <div>
+                  <span className="text-[gray]">Genres: </span>
+                  {genres.map((genre) => genre.name).join(", ")}
+                  <div>
+                    <span className="text-[gray]">Original Language:</span>
+                    {movie?.original_language}
+                  </div>
+                  <span className="text-[gray]">Total Votes:</span>
+                  <div className="text-[gray]">{movie?.vote_vount}</div>
+                </div>
               </div>
             </div>
           </div>
