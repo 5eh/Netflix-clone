@@ -122,8 +122,10 @@ function Modal() {
                     <span className="text-[gray]">Original Language:</span>{" "}
                     {movie?.original_language}
                   </div>
-                  <span className="text-[gray]">Total Votes:</span>{" "}
-                  <div>{movie?.vote_count}</div>
+                  <div>
+                    <span className="text-[gray]">Total Votes:</span>{" "}
+                    {movie?.vote_count}
+                  </div>
                 </div>
               </div>
             </div>
