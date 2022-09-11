@@ -1,4 +1,6 @@
 import Head from "next/head";
+import { getProducts, Product } from "@stripe/firestore-stripe-payments";
+import payments from "../lib/stripe";
 import Image from "next/image";
 import Header from "../components/Header";
 import Banner from "../components/Banner";
@@ -20,6 +22,7 @@ interface Props {
   comedyMovies: Movie[];
   romanceMovies: Movie[];
   documentaries: Movie[];
+  products: Product[];
 }
 
 const Home = ({
@@ -31,7 +34,9 @@ const Home = ({
   romanceMovies,
   topRated,
   trendingNow,
+  products,
 }: Props) => {
+  console.log(products);
   const { loading } = useAuth();
   const showModal = useRecoilValue(modalState);
   const subscription = false;
@@ -70,7 +75,15 @@ const Home = ({
 };
 
 export default Home;
+
 export const getServerSideProps = async () => {
+  const products = await getProducts(payments, {
+    includePrices: true,
+    activeOnly: true,
+  })
+    .then((res) => res)
+    .catch((error) => console.log(error.message));
+
   const [
     netflixOriginals,
     trendingNow,
@@ -101,6 +114,7 @@ export const getServerSideProps = async () => {
       horrorMovies: horrorMovies.results,
       romanceMovies: romanceMovies.results,
       documentaries: documentaries.results,
+      products,
     },
   };
 };
