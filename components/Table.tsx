@@ -4,7 +4,7 @@ import { Product } from "@stripe/firestore-stripe-payments";
 
 interface Props {
   products: Product[];
-  selectedPlan: Product;
+  selectedPlan: Product | null
 }
 
 function Table({ products, selectedPlan }: Props) {
@@ -17,7 +17,7 @@ function Table({ products, selectedPlan }: Props) {
             <td
               key={product.id}
               className={`tableDataFeature ${
-                selectedPlan.id === product.id ? "text-[#e50914" : "text-[gray]"
+                selectedPlan?.id === product.id ? "text-[#e50914" : "text-[gray]"
               }`}
             >
               USD{product.prices[0].unit_amount! / 100}
@@ -30,7 +30,7 @@ function Table({ products, selectedPlan }: Props) {
             <td
               key={product.id}
               className={`tableDataFeature ${
-                selectedPlan.id === product.id ? "text-[#e50914" : "text-[gray]"
+                selectedPlan?.id === product.id ? "text-[#e50914" : "text-[gray]"
               }`}
             >
               {product.metadata.videoQuality}
