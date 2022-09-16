@@ -15,7 +15,14 @@ import { responsiveFontSizes } from "@mui/material";
 import { Element, Genre } from "../typing";
 import ReactPlayer from "react-player/lazy";
 import { FaPlay } from "react-icons/fa";
-import { deleteDoc, doc, setDoc } from "firebase/firestore";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  DocumentData,
+  onSnapshot,
+  setDoc,
+} from "firebase/firestore";
 import toast, { Toaster } from "react-hot-toast";
 
 import useAuth from "../hooks/useAuth";
@@ -30,6 +37,17 @@ function Modal() {
   const { user } = useAuth();
   const [muted, setMuted] = useState(false);
   const [addedToList, setAddedToList] = useState(false);
+  const [movies, setMovies] = useState<DocumentData[] | Movie[]>([]);
+
+  const toastStyle = {
+    background: "white",
+    color: "black",
+    fontWeight: "bold",
+    fontSize: "16px",
+    padding: "15px",
+    borderRadius: "9999px",
+    maxWidth: "1000px",
+  };
 
   useEffect(() => {
     if (!movie) return;
@@ -56,6 +74,24 @@ function Modal() {
     fetchMovie();
   }, [movie]);
 
+  useEffect(() => {
+    if (user) {
+      return onSnapshot(
+        collection(db, "customers", user.uid, "myList"),
+        (snapshot) => setMovies(snapshot.docs)
+      );
+    }
+  }, [db, movie?.id]);
+
+  // Check if the movie is already in the user's list
+  useEffect(
+    () =>
+      setAddedToList(
+        movies.findIndex((result) => result.data().id === movie?.id) !== -1
+      ),
+    [movies]
+  );
+
   const handleList = async () => {
     if (addedToList) {
       await deleteDoc(
@@ -66,6 +102,7 @@ function Modal() {
         `${movie?.title || movie?.original_name} has been removed from My List`,
         {
           duration: 8000,
+          style: toastStyle,
         }
       );
     } else {
@@ -77,6 +114,7 @@ function Modal() {
         `${movie?.title || movie?.original_name} has been added to My List`,
         {
           duration: 8000,
+          style: toastStyle,
         }
       );
     }
