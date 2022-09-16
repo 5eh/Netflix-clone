@@ -5,14 +5,24 @@ import useAuth from "../hooks/useAuth";
 import { CheckIcon } from "@heroicons/react/outline";
 import Table from "./Table";
 import { useState } from "react";
+import Loader from "./Loader";
+import { loadCheckout } from "../lib/stripe";
 
 interface Props {
   products: Product[];
 }
 
 function Plans({ products }: Props) {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const [selectedPlan, setSelectedPlan] = useState<Product | null>(products[2]);
+  const [isBillingLoading, setIsBillingLoading] = useState(false);
+
+  const subscribeToPlan = () => {
+    if (!user) return 
+
+    loadCheckout(selectedPlan?.prices[0].id!)
+    setIsBillingLoading(true)
+  }
 
   return (
     <div>
